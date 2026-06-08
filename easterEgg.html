@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>彩蛋 - 神庙逃亡</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            overflow: hidden;
+            background: #0a0a0f;
+            color: #e8d5b0;
+            font-family: 'Georgia', serif;
+        }
+        .container {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(ellipse at center, #1a1015 0%, #0a0a0f 70%);
+        }
+        h1 {
+            font-size: 48px;
+            color: #d4a0ff;
+            text-shadow: 0 0 30px rgba(180, 80, 255, 0.3);
+            font-family: 'STKaiti', 'KaiTi', '楷体', serif;
+            letter-spacing: 0.15em;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 14px;
+            color: rgba(200, 150, 255, 0.4);
+            letter-spacing: 0.3em;
+            margin-bottom: 30px;
+        }
+        .egg-content {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .egg-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: egg-float 3s ease-in-out infinite;
+        }
+        @keyframes egg-float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.05); }
+        }
+        .egg-text {
+            color: rgba(200, 150, 255, 0.6);
+            font-size: 15px;
+            letter-spacing: 0.15em;
+            line-height: 2;
+        }
+        .redirect-info {
+            color: rgba(200, 150, 255, 0.25);
+            font-size: 12px;
+            margin-top: 20px;
+            letter-spacing: 0.1em;
+        }
+        .loading-dots::after {
+            content: '';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        @keyframes dots {
+            0%   { content: ''; }
+            25%  { content: '.'; }
+            50%  { content: '..'; }
+            75%  { content: '...'; }
+            100% { content: ''; }
+        }
+        .back-btn {
+            display: inline-block;
+            padding: 10px 30px;
+            margin-top: 24px;
+            border: 1px solid rgba(180, 80, 255, 0.3);
+            background: linear-gradient(135deg, rgba(30,15,40,0.7), rgba(60,30,80,0.5));
+            color: #e0c0ff;
+            text-decoration: none;
+            font-size: 14px;
+            font-family: 'STKaiti', 'KaiTi', '楷体', serif;
+            letter-spacing: 0.3em;
+            transition: all 0.35s ease;
+            border-radius: 4px;
+            display: none;
+        }
+        .back-btn:hover {
+            border-color: rgba(180, 80, 255, 0.6);
+            box-shadow: 0 0 25px rgba(180, 80, 255, 0.15);
+            transform: scale(1.04);
+            color: #f0d0ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="egg-content">
+            <div class="egg-icon">&#9835;</div>
+            <h1>彩 蛋</h1>
+            <div class="subtitle">&#9670; Surprise! &#9670;</div>
+            <div class="egg-text">
+                你即将被 Rick Roll ...<br>
+                正在检测你的位置 <span class="loading-dots"></span>
+            </div>
+            <div class="redirect-info" id="redirect-info">
+                正在跳转...
+            </div>
+            <a href="index.html" class="back-btn" id="back-btn">&#8592; 返回主菜单</a>
+        </div>
+    </div>
+
+    <script>
+    // ================================================================
+    //  IP-based Rick Roll Redirect
+    // ================================================================
+
+    const BILIBILI_URL = 'https://www.bilibili.com/video/BV19sE461EcC/';
+    const YOUTUBE_URL  = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+
+    const infoEl = document.getElementById('redirect-info');
+    const backBtn = document.getElementById('back-btn');
+
+    async function detectAndRedirect() {
+        // Attempt 1: ip-api.com (fast, widely available)
+        try {
+            const res = await fetch('https://ip-api.com/json/?fields=countryCode', {
+                signal: AbortSignal.timeout(3000)
+            });
+            const data = await res.json();
+            if (data.countryCode === 'CN') {
+                infoEl.textContent = '检测到国内 IP，为你跳转至 B 站...';
+                setTimeout(() => { window.location.href = BILIBILI_URL; }, 1500);
+            } else {
+                infoEl.textContent = '检测到海外 IP，为你跳转至 YouTube...';
+                setTimeout(() => { window.location.href = YOUTUBE_URL; }, 1500);
+            }
+            return;
+        } catch(e) {
+            console.log('ip-api.com failed:', e);
+        }
+
+        // Attempt 2: ip.useragentinfo.com (Chinese service)
+        try {
+            const res = await fetch('https://ip.useragentinfo.com/json', {
+                signal: AbortSignal.timeout(3000)
+            });
+            const data = await res.json();
+            if (data.country === '中国') {
+                infoEl.textContent = '检测到国内 IP，为你跳转至 B 站...';
+                setTimeout(() => { window.location.href = BILIBILI_URL; }, 1500);
+            } else {
+                infoEl.textContent = '检测到海外 IP，为你跳转至 YouTube...';
+                setTimeout(() => { window.location.href = YOUTUBE_URL; }, 1500);
+            }
+            return;
+        } catch(e) {
+            console.log('ip.useragentinfo.com failed:', e);
+        }
+
+        // Attempt 3: myip.ipip.net (simple text)
+        try {
+            const res = await fetch('https://myip.ipip.net', {
+                signal: AbortSignal.timeout(3000)
+            });
+            const text = await res.text();
+            if (text.includes('中国')) {
+                infoEl.textContent = '检测到国内 IP，为你跳转至 B 站...';
+                setTimeout(() => { window.location.href = BILIBILI_URL; }, 1500);
+            } else {
+                infoEl.textContent = '检测到海外 IP，为你跳转至 YouTube...';
+                setTimeout(() => { window.location.href = YOUTUBE_URL; }, 1500);
+            }
+            return;
+        } catch(e) {
+            console.log('myip.ipip.net failed:', e);
+        }
+
+        // Fallback: could not detect, go to YouTube (international default)
+        infoEl.textContent = '无法检测位置，默认跳转至 YouTube...';
+        setTimeout(() => { window.location.href = YOUTUBE_URL; }, 1500);
+    }
+
+    // If redirect fails (user is still here after 5 seconds), show back button
+    setTimeout(() => {
+        if (!document.hidden) {
+            backBtn.style.display = 'inline-block';
+            infoEl.textContent = '跳转未自动完成？点击下方按钮手动返回';
+        }
+    }, 5000);
+
+    detectAndRedirect();
+    </script>
+</body>
+</html>

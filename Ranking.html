@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>排行榜 - 神庙逃亡</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            overflow-x: hidden;
+            overflow-y: auto;
+            background: #0a0a0f;
+            color: #e8d5b0;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            user-select: none;
+            min-height: 100vh;
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #0a0a0f; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,180,50,0.2); border-radius: 2px; }
+
+        /* === 3D Temple Background (CSS) === */
+        #bg-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at 50% 0%, rgba(60,40,20,0.3) 0%, transparent 60%),
+                radial-gradient(ellipse at 30% 100%, rgba(40,30,60,0.2) 0%, transparent 50%),
+                linear-gradient(180deg, #0a0a0f 0%, #0d0d1a 40%, #12121f 70%, #0a0a12 100%);
+        }
+        #bg-canvas::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                repeating-linear-gradient(90deg, transparent 0px, transparent 60px, rgba(255,180,80,0.015) 60px, rgba(255,180,80,0.015) 61px);
+        }
+        /* Floating particles */
+        .bg-particle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,200,100,0.15) 0%, transparent 70%);
+            pointer-events: none;
+            animation: float-up linear infinite;
+        }
+        @keyframes float-up {
+            0% { transform: translateY(100vh) scale(1); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.4; }
+            100% { transform: translateY(-10vh) scale(0.5); opacity: 0; }
+        }
+
+        /* === Content Container === */
+        #main {
+            position: relative;
+            z-index: 1;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 40px 24px 60px;
+        }
+
+        /* === Title (same style as index) === */
+        .title-section {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        .title-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 90px;
+            background: radial-gradient(ellipse, rgba(255,180,50,0.2) 0%, transparent 70%);
+            filter: blur(20px);
+            animation: glow-pulse 3s ease-in-out infinite;
+        }
+        @keyframes glow-pulse {
+            0%, 100% { opacity: 0.5; transform: translate(-50%,-50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%,-50%) scale(1.08); }
+        }
+        .main-title {
+            font-size: clamp(36px, 6vw, 56px);
+            font-weight: 900;
+            color: #f5d78a;
+            text-shadow: 0 0 20px rgba(255,180,50,0.3), 0 0 60px rgba(255,120,20,0.2), 0 4px 8px rgba(0,0,0,0.8);
+            letter-spacing: 0.15em;
+            position: relative;
+            z-index: 1;
+            font-family: 'STKaiti','KaiTi','楷体',serif;
+        }
+        .sub-title {
+            font-size: 13px;
+            color: rgba(255,210,130,0.5);
+            letter-spacing: 0.6em;
+            text-transform: uppercase;
+            margin-top: 6px;
+        }
+
+        /* === Tab Buttons === */
+        .tabs {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255,200,100,0.1);
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 12px 0;
+            text-align: center;
+            font-family: 'STKaiti','KaiTi','楷体',serif;
+            font-size: 15px;
+            letter-spacing: 0.15em;
+            color: rgba(255,210,150,0.4);
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .tab-btn:hover { color: rgba(255,210,150,0.7); }
+        .tab-btn.active {
+            color: #f5d78a;
+            border-bottom-color: #f5d78a;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* === Panel Box === */
+        .panel {
+            background: linear-gradient(135deg, rgba(40,25,10,0.5), rgba(20,15,10,0.3));
+            border: 1px solid rgba(255,200,100,0.1);
+            border-radius: 6px;
+            padding: 24px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        .panel-title {
+            font-family: 'STKaiti','KaiTi','楷体',serif;
+            font-size: 17px;
+            color: #f5d78a;
+            letter-spacing: 0.15em;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,200,100,0.08);
+        }
+
+        /* === Inputs === */
+        .inp {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(255,200,100,0.04);
+            border: 1px solid rgba(255,200,100,0.15);
+            border-radius: 4px;
+            color: #e8d5b0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .inp:focus { border-color: rgba(255,200,100,0.4); }
+        .inp::placeholder { color: rgba(255,210,150,0.2); }
+        textarea.inp { resize: vertical; min-height: 80px; }
+
+        /* === Buttons === */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 28px;
+            border: 1px solid rgba(255,200,100,0.25);
+            background: linear-gradient(135deg, rgba(40,25,10,0.7), rgba(80,50,20,0.5));
+            color: #e8d5b0;
+            font-family: 'STKaiti','KaiTi','楷体',serif;
+            font-size: 15px;
+            letter-spacing: 0.2em;
+            cursor: pointer;
+            transition: all 0.35s ease;
+            border-radius: 4px;
+        }
+        .btn:hover {
+            border-color: rgba(255,200,100,0.5);
+            box-shadow: 0 0 20px rgba(255,180,50,0.12);
+            transform: scale(1.03);
+            color: #ffddaa;
+        }
+        .btn:active { transform: scale(0.97); }
+        .btn-sm { padding: 6px 16px; font-size: 13px; }
+        .btn-copy { font-size: 12px; padding: 4px 12px; }
+        .btn-primary {
+            background: linear-gradient(135deg, rgba(60,35,15,0.8), rgba(100,60,20,0.6));
+            border-color: rgba(255,200,100,0.35);
+        }
+
+        .btn-row { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+
+        /* === Profile === */
+        .profile-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+        .profile-row label {
+            font-size: 13px;
+            color: rgba(255,210,150,0.5);
+            letter-spacing: 0.1em;
+            min-width: 70px;
+        }
+        .profile-row .inp { flex: 1; min-width: 140px; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 8px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 12px 6px;
+            border: 1px solid rgba(255,200,100,0.06);
+            border-radius: 4px;
+            background: rgba(255,200,100,0.02);
+        }
+        .stat-item .num {
+            font-size: 22px;
+            font-weight: bold;
+            color: #f5d78a;
+        }
+        .stat-item .lbl {
+            font-size: 11px;
+            color: rgba(255,210,150,0.4);
+            letter-spacing: 0.1em;
+            margin-top: 4px;
+        }
+
+        /* === Save Code === */
+        .save-code-area {
+            position: relative;
+        }
+        .save-code-area textarea {
+            font-size: 12px;
+            line-height: 1.5;
+            word-break: break-all;
+        }
+        .copy-float {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+        }
+
+        /* === Leaderboard === */
+        .rank-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border: 1px solid rgba(255,200,100,0.06);
+            background: rgba(255,200,100,0.02);
+            border-radius: 4px;
+            margin-bottom: 6px;
+            transition: background 0.3s;
+        }
+        .rank-item.me {
+            border-color: rgba(255,200,100,0.2);
+            background: rgba(255,200,100,0.06);
+        }
+        .rank-item:hover { background: rgba(255,200,100,0.06); }
+        .rank-num {
+            width: 30px;
+            font-size: 14px;
+            color: rgba(255,210,150,0.4);
+            font-weight: bold;
+            text-align: center;
+        }
+        .rank-num.gold { color: #ffd700; }
+        .rank-num.silver { color: #c0c0c0; }
+        .rank-num.bronze { color: #cd7f32; }
+        .rank-name {
+            flex: 1;
+            font-size: 14px;
+            color: #e8d5b0;
+            letter-spacing: 0.05em;
+            padding: 0 12px;
+        }
+        .rank-score {
+            font-size: 14px;
+            color: #f5d78a;
+            letter-spacing: 0.05em;
+            min-width: 60px;
+            text-align: right;
+        }
+        .rank-empty {
+            text-align: center;
+            color: rgba(255,210,150,0.2);
+            font-size: 14px;
+            padding: 30px 0;
+        }
+
+        /* === Achievements === */
+        .ach-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 8px;
+        }
+        .ach-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border: 1px solid rgba(255,200,100,0.06);
+            border-radius: 4px;
+            background: rgba(255,200,100,0.02);
+            transition: all 0.3s;
+        }
+        .ach-item.unlocked {
+            border-color: rgba(255,200,100,0.15);
+            background: rgba(255,200,100,0.05);
+        }
+        .ach-item.locked { opacity: 0.4; }
+        .ach-icon { font-size: 22px; }
+        .ach-info { flex: 1; min-width: 0; }
+        .ach-name {
+            font-size: 13px;
+            color: #e8d5b0;
+            letter-spacing: 0.05em;
+        }
+        .ach-item.unlocked .ach-name { color: #f5d78a; }
+        .ach-desc {
+            font-size: 11px;
+            color: rgba(255,210,150,0.3);
+            margin-top: 2px;
+        }
+
+        /* === Toast === */
+        #toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            padding: 10px 24px;
+            background: rgba(10,10,15,0.9);
+            border: 1px solid rgba(255,200,100,0.2);
+            border-radius: 4px;
+            color: #e8d5b0;
+            font-size: 14px;
+            font-family: 'STKaiti','KaiTi','楷体',serif;
+            letter-spacing: 0.1em;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            backdrop-filter: blur(8px);
+        }
+        #toast.show { opacity: 1; }
+
+        /* === Back Button === */
+        .back-row {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .back-btn {
+            display: inline-block;
+            padding: 10px 36px;
+            border: 1px solid rgba(255,200,100,0.2);
+            background: linear-gradient(135deg, rgba(40,25,10,0.5), rgba(80,50,20,0.3));
+            color: #e8d5b0;
+            text-decoration: none;
+            font-size: 15px;
+            font-family: 'STKaiti','KaiTi','楷体',serif;
+            letter-spacing: 0.3em;
+            transition: all 0.35s ease;
+            border-radius: 4px;
+        }
+        .back-btn:hover {
+            border-color: rgba(255,200,100,0.5);
+            box-shadow: 0 0 20px rgba(255,180,50,0.12);
+            transform: scale(1.04);
+            color: #ffddaa;
+        }
+
+        /* === Responsive === */
+        @media (max-width: 600px) {
+            #main { padding: 20px 12px 40px; }
+            .panel { padding: 16px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .ach-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bg-canvas"></div>
+
+    <!-- Toast -->
+    <div id="toast"></div>
+
+    <div id="main">
+        <!-- Title -->
+        <div class="title-section">
+            <div class="title-glow"></div>
+            <h1 class="main-title">排 行 榜</h1>
+            <div class="sub-title">&#9670; Leaderboard &amp; Profile &#9670;</div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="profile">我的档案</button>
+            <button class="tab-btn" data-tab="save">存档管理</button>
+            <button class="tab-btn" data-tab="leaderboard">排行榜</button>
+            <button class="tab-btn" data-tab="achievements">成就</button>
+        </div>
+
+        <!-- ===== Tab: Profile ===== -->
+        <div class="tab-content active" id="tab-profile">
+            <div class="panel">
+                <div class="panel-title">&#128100; 玩家信息</div>
+                <div class="profile-row">
+                    <label>玩家ID</label>
+                    <input class="inp" id="inp-playerid" placeholder="输入你的玩家ID (保存后不可更改)" maxlength="24">
+                    <button class="btn btn-sm btn-primary" id="btn-set-id">确认</button>
+                </div>
+                <div class="profile-row" style="margin-top:4px;">
+                    <label style="font-size:11px;color:rgba(255,210,150,0.3);">提示：ID 将作为你的存档加密密钥，设置后不可修改</label>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-title">&#128202; 总统计数据</div>
+                <div class="stats-grid" id="profile-stats">
+                    <div class="stat-item"><div class="num" id="ps-highscore">0</div><div class="lbl">最高分</div></div>
+                    <div class="stat-item"><div class="num" id="ps-totalscore">0</div><div class="lbl">总分</div></div>
+                    <div class="stat-item"><div class="num" id="ps-distance">0 m</div><div class="lbl">总距离</div></div>
+                    <div class="stat-item"><div class="num" id="ps-coins">0</div><div class="lbl">总金币</div></div>
+                    <div class="stat-item"><div class="num" id="ps-games">0</div><div class="lbl">游戏次数</div></div>
+                    <div class="stat-item"><div class="num" id="ps-deaths">0</div><div class="lbl">死亡次数</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== Tab: Save ===== -->
+        <div class="tab-content" id="tab-save">
+            <div class="panel">
+                <div class="panel-title">&#128190; 生成存档码</div>
+                <p style="font-size:12px;color:rgba(255,210,150,0.3);margin-bottom:12px;">
+                    存档码使用 AES-CBC 加密，以你的玩家ID为密钥。保存后可在其他设备上恢复进度。
+                </p>
+                <div class="save-code-area">
+                    <textarea class="inp" id="save-code-output" placeholder="点击下方按钮生成存档码..." readonly rows="3"></textarea>
+                    <button class="btn btn-sm copy-float" id="btn-copy-save">复制</button>
+                </div>
+                <div class="btn-row">
+                    <button class="btn btn-primary" id="btn-gen-save">&#128190; 生成存档码</button>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-title">&#128191; 导入存档码</div>
+                <textarea class="inp" id="save-code-input" placeholder="粘贴存档码..." rows="3"></textarea>
+                <div class="btn-row">
+                    <button class="btn btn-primary" id="btn-load-save">&#128259; 导入存档</button>
+                </div>
+                <div id="import-result" style="margin-top:10px;font-size:13px;color:rgba(255,210,150,0.4);"></div>
+            </div>
+        </div>
+
+        <!-- ===== Tab: Leaderboard ===== -->
+        <div class="tab-content" id="tab-leaderboard">
+            <div class="panel">
+                <div class="panel-title">&#127942; 最高分排行</div>
+                <div id="leaderboard-list"></div>
+            </div>
+            <div class="panel">
+                <div class="panel-title">&#128176; 金币排行</div>
+                <div id="coinboard-list"></div>
+            </div>
+        </div>
+
+        <!-- ===== Tab: Achievements ===== -->
+        <div class="tab-content" id="tab-achievements">
+            <div class="panel">
+                <div class="panel-title">&#127775; 成就列表 <span id="ach-progress" style="font-size:13px;color:rgba(255,210,150,0.3);"></span></div>
+                <div class="ach-grid" id="ach-grid"></div>
+            </div>
+        </div>
+
+        <!-- Back -->
+        <div class="back-row">
+            <a href="index.html" class="back-btn">&#8592; 返回主菜单</a>
+        </div>
+    </div>
+
+    <script>
+    // ================================================================
+    //  SHARED: Player Data & Crypto
+    // ================================================================
+
+    const STORAGE_KEYS = {
+        player: 'temple_run_player',
+        id: 'temple_run_player_id',
+        leaderboard: 'temple_run_leaderboard',
+        achievements: 'temple_run_achievements',
+    };
+
+    // ---- 20 Achievements ----
+    const ACHIEVEMENTS = [
+        { id:'ach_01', name:'初出茅庐',   desc:'完成第1局游戏',             icon:'🌱', threshold: g=>g.totalGames>=1 },
+        { id:'ach_02', name:'小试牛刀',   desc:'累计跑100米',               icon:'🏃', threshold: g=>g.totalDistance>=100 },
+        { id:'ach_03', name:'渐入佳境',   desc:'累计跑500米',               icon:'🏃‍♂️', threshold: g=>g.totalDistance>=500 },
+        { id:'ach_04', name:'千里之行',   desc:'累计跑1000米',              icon:'🎯', threshold: g=>g.totalDistance>=1000 },
+        { id:'ach_05', name:'马拉松选手', desc:'累计跑5000米',              icon:'🏅', threshold: g=>g.totalDistance>=5000 },
+        { id:'ach_06', name:'金币猎人',   desc:'累计收集50金币',            icon:'🪙', threshold: g=>g.totalCoins>=50 },
+        { id:'ach_07', name:'黄金矿工',   desc:'累计收集200金币',           icon:'💰', threshold: g=>g.totalCoins>=200 },
+        { id:'ach_08', name:'百万富翁',   desc:'累计收集1000金币',          icon:'💎', threshold: g=>g.totalCoins>=1000 },
+        { id:'ach_09', name:'身经百战',   desc:'累计玩20局',                icon:'⚔️', threshold: g=>g.totalGames>=20 },
+        { id:'ach_10', name:'百折不挠',   desc:'累计玩50局',                icon:'🛡️', threshold: g=>g.totalGames>=50 },
+        { id:'ach_11', name:'幸存者',     desc:'单局跑过2000米',            icon:'🏆', threshold: g=>g.bestDistance>=2000 },
+        { id:'ach_12', name:'飞速传说',   desc:'速度达到最大值',            icon:'💨', threshold: g=>g.stats?.maxSpeed===true },
+        { id:'ach_13', name:'连击大师',   desc:'连击达到x10',               icon:'🔥', threshold: g=>g.stats?.maxCombo>=10 },
+        { id:'ach_14', name:'铜墙铁壁',   desc:'累计闪避100个障碍物',       icon:'🪨', threshold: g=>g.stats?.obstaclesDodged>=100 },
+        { id:'ach_15', name:'闪避达人',   desc:'累计闪避500个障碍物',       icon:'🌀', threshold: g=>g.stats?.obstaclesDodged>=500 },
+        { id:'ach_16', name:'弹跳高手',   desc:'累计跳跃100次',             icon:'🦘', threshold: g=>g.stats?.jumps>=100 },
+        { id:'ach_17', name:'滑铲大师',   desc:'累计滑铲100次',             icon:'🧊', threshold: g=>g.stats?.slides>=100 },
+        { id:'ach_18', name:'开局满分',   desc:'单局拿到5000分',            icon:'⭐', threshold: g=>g.highScore>=5000 },
+        { id:'ach_19', name:'高分传说',   desc:'单局拿到20000分',           icon:'👑', threshold: g=>g.highScore>=20000 },
+        { id:'ach_20', name:'完美之局',   desc:'以满血状态完成一局',        icon:'💖', threshold: g=>g.stats?.perfectGame===true },
+        { id:'ach_21', name:'收藏家',     desc:'解锁至少10个成就',          icon:'📦', threshold: g=>Object.keys(g.achievements||{}).length>=10 },
+        { id:'ach_22', name:'神庙大师',   desc:'解锁全部成就',              icon:'🏛️', threshold: g=>Object.keys(g.achievements||{}).length>=22 },
+    ];
+
+    // ---- Default Player Data ----
+    function defaultPlayerData() {
+        return {
+            playerId: '',
+            highScore: 0,
+            totalScore: 0,
+            totalDistance: 0,
+            totalCoins: 0,
+            totalGames: 0,
+            bestDistance: 0,
+            achievements: {},
+            stats: {
+                obstaclesDodged: 0,
+                maxCombo: 0,
+                jumps: 0,
+                slides: 0,
+                deaths: 0,
+                maxSpeed: false,
+                perfectGame: false,
+                singleRunCoins: 0,
+            },
+            lastPlayed: null,
+            createdAt: Date.now(),
+        };
+    }
+
+    // ---- Load / Save ----
+    function loadPlayerData() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEYS.player);
+            if (raw) {
+                const d = JSON.parse(raw);
+                // Merge with defaults for new fields
+                const def = defaultPlayerData();
+                for (const k in def) {
+                    if (typeof def[k] === 'object' && !Array.isArray(def[k]) && def[k] !== null) {
+                        d[k] = d[k] || {};
+                        for (const k2 in def[k]) {
+                            if (d[k][k2] === undefined) d[k][k2] = def[k][k2];
+                        }
+                    } else {
+                        if (d[k] === undefined) d[k] = def[k];
+                    }
+                }
+                return d;
+            }
+        } catch(e) { /* ignore */ }
+        return defaultPlayerData();
+    }
+
+    function savePlayerData(d) {
+        d.lastPlayed = Date.now();
+        localStorage.setItem(STORAGE_KEYS.player, JSON.stringify(d));
+        // Update leaderboard
+        updateLeaderboard(d);
+    }
+
+    function getPlayerId() {
+        return localStorage.getItem(STORAGE_KEYS.id) || '';
+    }
+
+    function setPlayerId(id) {
+        if (!id.trim()) return false;
+        const existing = getPlayerId();
+        if (existing && existing !== id.trim()) return false; // can't change
+        localStorage.setItem(STORAGE_KEYS.id, id.trim());
+        const d = loadPlayerData();
+        d.playerId = id.trim();
+        savePlayerData(d);
+        return true;
+    }
+
+    // ---- AES Encryption (Web Crypto API) ----
+    async function deriveKey(playerId) {
+        const keyBytes = new TextEncoder().encode(playerId.padEnd(16, '0').slice(0, 16));
+        // Use SHA-256 to get a proper 256-bit key, then take first 128 bits for AES-CBC
+        const hash = await crypto.subtle.digest('SHA-256', keyBytes);
+        const aesKey = await crypto.subtle.importKey(
+            'raw', hash.slice(0, 16),
+            { name: 'AES-CBC' }, false, ['encrypt', 'decrypt']
+        );
+        return aesKey;
+    }
+
+    function bufToBase64(buf) {
+        const bytes = new Uint8Array(buf);
+        let binary = '';
+        for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+        return btoa(binary);
+    }
+
+    function base64ToBuf(b64) {
+        const binary = atob(b64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        return bytes.buffer;
+    }
+
+    async function generateSaveCode(playerData, playerId) {
+        try {
+            const key = await deriveKey(playerId);
+            const iv = crypto.getRandomValues(new Uint8Array(16));
+            const data = JSON.stringify({
+                v: 1,
+                d: {
+                    highScore: playerData.highScore,
+                    totalScore: playerData.totalScore,
+                    totalDistance: playerData.totalDistance,
+                    totalCoins: playerData.totalCoins,
+                    totalGames: playerData.totalGames,
+                    bestDistance: playerData.bestDistance,
+                    achievements: playerData.achievements,
+                    stats: playerData.stats,
+                }
+            });
+            const encrypted = await crypto.subtle.encrypt(
+                { name: 'AES-CBC', iv }, key, new TextEncoder().encode(data)
+            );
+            const combined = new Uint8Array(16 + encrypted.byteLength);
+            combined.set(iv, 0);
+            combined.set(new Uint8Array(encrypted), 16);
+            return bufToBase64(combined.buffer);
+        } catch(e) {
+            console.error('Encrypt error:', e);
+            return null;
+        }
+    }
+
+    async function loadFromSaveCode(code, playerId) {
+        try {
+            const key = await deriveKey(playerId);
+            const combined = new Uint8Array(base64ToBuf(code));
+            const iv = combined.slice(0, 16);
+            const ciphertext = combined.slice(16);
+            const decrypted = await crypto.subtle.decrypt(
+                { name: 'AES-CBC', iv }, key, ciphertext
+            );
+            const parsed = JSON.parse(new TextDecoder().decode(decrypted));
+            return parsed.d || null;
+        } catch(e) {
+            console.error('Decrypt error:', e);
+            return null;
+        }
+    }
+
+    // ---- Leaderboard ----
+    function getLeaderboard() {
+        try {
+            return JSON.parse(localStorage.getItem(STORAGE_KEYS.leaderboard) || '[]');
+        } catch(e) { return []; }
+    }
+
+    function updateLeaderboard(playerData) {
+        let lb = getLeaderboard();
+        const pid = playerData.playerId;
+        if (!pid) return;
+        const existing = lb.findIndex(e => e.id === pid);
+        const entry = {
+            id: pid,
+            highScore: playerData.highScore,
+            totalScore: playerData.totalScore,
+            totalDistance: playerData.totalDistance,
+            totalCoins: playerData.totalCoins,
+            totalGames: playerData.totalGames,
+            updatedAt: Date.now(),
+        };
+        if (existing >= 0) {
+            // Update only if new values are higher
+            const old = lb[existing];
+            if (entry.highScore > old.highScore) old.highScore = entry.highScore;
+            if (entry.totalCoins > old.totalCoins) old.totalCoins = entry.totalCoins;
+            if (entry.totalDistance > old.totalDistance) old.totalDistance = entry.totalDistance;
+            if (entry.totalScore > old.totalScore) old.totalScore = entry.totalScore;
+            if (entry.totalGames > old.totalGames) old.totalGames = entry.totalGames;
+            old.updatedAt = entry.updatedAt;
+        } else {
+            lb.push(entry);
+        }
+        // Keep top 100
+        lb.sort((a, b) => b.highScore - a.highScore);
+        if (lb.length > 100) lb = lb.slice(0, 100);
+        localStorage.setItem(STORAGE_KEYS.leaderboard, JSON.stringify(lb));
+    }
+
+    // ---- Toast ----
+    function showToast(msg, duration) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(el._t);
+        el._t = setTimeout(() => el.classList.remove('show'), duration || 2500);
+    }
+
+    // ================================================================
+    //  UI: Render Functions
+    // ================================================================
+
+    let currentPlayerId = '';
+    let currentData = null;
+
+    function refreshAll() {
+        currentPlayerId = getPlayerId();
+        currentData = loadPlayerData();
+
+        // Set ID field
+        document.getElementById('inp-playerid').value = currentPlayerId;
+
+        // Update profile stats
+        document.getElementById('ps-highscore').textContent = currentData.highScore.toLocaleString();
+        document.getElementById('ps-totalscore').textContent = currentData.totalScore.toLocaleString();
+        document.getElementById('ps-distance').textContent = Math.floor(currentData.totalDistance).toLocaleString() + ' m';
+        document.getElementById('ps-coins').textContent = currentData.totalCoins.toLocaleString();
+        document.getElementById('ps-games').textContent = currentData.totalGames.toLocaleString();
+        document.getElementById('ps-deaths').textContent = (currentData.stats?.deaths || 0).toLocaleString();
+
+        // Render leaderboard
+        renderLeaderboard();
+        renderCoinboard();
+        renderAchievements();
+    }
+
+    function renderLeaderboard() {
+        const lb = getLeaderboard();
+        const el = document.getElementById('leaderboard-list');
+        if (lb.length === 0) {
+            el.innerHTML = '<div class="rank-empty">&#9670; 暂无记录 &#9670;<br><span style="font-size:11px;">开始游戏后自动生成</span></div>';
+            return;
+        }
+        el.innerHTML = lb.slice(0, 30).map((e, i) => {
+            const cls = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+            const isMe = e.id === currentPlayerId;
+            return `<div class="rank-item${isMe?' me':''}">
+                <div class="rank-num ${cls}">${i+1}</div>
+                <div class="rank-name">${escHtml(e.id)}${isMe?' <span style="color:rgba(255,210,150,0.3);font-size:11px;">(你)</span>':''}</div>
+                <div class="rank-score">${e.highScore.toLocaleString()}</div>
+            </div>`;
+        }).join('');
+    }
+
+    function renderCoinboard() {
+        const lb = getLeaderboard();
+        const sorted = [...lb].sort((a, b) => b.totalCoins - a.totalCoins);
+        const el = document.getElementById('coinboard-list');
+        if (sorted.length === 0) {
+            el.innerHTML = '<div class="rank-empty">&#9670; 暂无记录 &#9670;</div>';
+            return;
+        }
+        el.innerHTML = sorted.slice(0, 20).map((e, i) => {
+            const isMe = e.id === currentPlayerId;
+            return `<div class="rank-item${isMe?' me':''}">
+                <div class="rank-num">${i+1}</div>
+                <div class="rank-name">${escHtml(e.id)}${isMe?' <span style="color:rgba(255,210,150,0.3);font-size:11px;">(你)</span>':''}</div>
+                <div class="rank-score">${e.totalCoins.toLocaleString()} &#128176;</div>
+            </div>`;
+        }).join('');
+    }
+
+    function renderAchievements() {
+        const el = document.getElementById('ach-grid');
+        const unlocked = currentData.achievements || {};
+        const total = ACHIEVEMENTS.length;
+        const done = Object.keys(unlocked).length;
+        document.getElementById('ach-progress').textContent = `(${done}/${total})`;
+
+        el.innerHTML = ACHIEVEMENTS.map(a => {
+            const isUnlocked = !!unlocked[a.id];
+            return `<div class="ach-item ${isUnlocked?'unlocked':'locked'}">
+                <div class="ach-icon">${a.icon}</div>
+                <div class="ach-info">
+                    <div class="ach-name">${a.name}</div>
+                    <div class="ach-desc">${a.desc}</div>
+                </div>
+                <div style="font-size:16px;opacity:${isUnlocked?1:0.2};">
+                    ${isUnlocked ? '&#10003;' : '&#9670;'}
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function escHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+
+    // ================================================================
+    //  UI: Tab Switching
+    // ================================================================
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            const tab = document.getElementById('tab-' + btn.dataset.tab);
+            if (tab) tab.classList.add('active');
+        });
+    });
+
+    // ================================================================
+    //  UI: Event Handlers
+    // ================================================================
+
+    // Set Player ID
+    document.getElementById('btn-set-id').addEventListener('click', () => {
+        const inp = document.getElementById('inp-playerid');
+        const id = inp.value.trim();
+        if (!id) { showToast('请输入玩家ID'); return; }
+        const existing = getPlayerId();
+        if (existing && existing !== id) {
+            showToast('玩家ID已设置，不可修改！如需重置请清除浏览器数据。', 3000);
+            inp.value = existing;
+            return;
+        }
+        if (setPlayerId(id)) {
+            showToast('玩家ID设置成功！');
+            refreshAll();
+        } else {
+            showToast('设置失败');
+        }
+    });
+
+    // Generate Save Code
+    document.getElementById('btn-gen-save').addEventListener('click', async () => {
+        const pid = getPlayerId();
+        if (!pid) { showToast('请先设置玩家ID', 3000); return; }
+        const data = loadPlayerData();
+        const code = await generateSaveCode(data, pid);
+        if (code) {
+            document.getElementById('save-code-output').value = code;
+            showToast('存档码生成成功！');
+        } else {
+            showToast('生成失败，请重试');
+        }
+    });
+
+    // Copy Save Code
+    document.getElementById('btn-copy-save').addEventListener('click', () => {
+        const ta = document.getElementById('save-code-output');
+        if (!ta.value) { showToast('请先生成存档码'); return; }
+        navigator.clipboard.writeText(ta.value).then(() => {
+            showToast('已复制到剪贴板');
+        }).catch(() => {
+            ta.select();
+            document.execCommand('copy');
+            showToast('已复制');
+        });
+    });
+
+    // Load Save Code
+    document.getElementById('btn-load-save').addEventListener('click', async () => {
+        const pid = getPlayerId();
+        if (!pid) { showToast('请先设置玩家ID', 3000); return; }
+        const code = document.getElementById('save-code-input').value.trim();
+        if (!code) { showToast('请粘贴存档码', 3000); return; }
+        document.getElementById('import-result').textContent = '正在解密...';
+        const imported = await loadFromSaveCode(code, pid);
+        if (!imported) {
+            document.getElementById('import-result').textContent = '❌ 解密失败，请检查玩家ID或存档码是否正确';
+            return;
+        }
+        // Merge imported data
+        const current = loadPlayerData();
+        for (const k of ['highScore','totalScore','totalDistance','totalCoins','totalGames','bestDistance']) {
+            if (imported[k] > (current[k] || 0)) current[k] = imported[k];
+        }
+        if (imported.achievements) {
+            for (const k in imported.achievements) current.achievements[k] = true;
+        }
+        if (imported.stats) {
+            for (const k in imported.stats) {
+                if (imported.stats[k] > (current.stats[k] || 0)) current.stats[k] = imported.stats[k];
+            }
+        }
+        savePlayerData(current);
+        refreshAll();
+        document.getElementById('import-result').textContent = '✅ 存档导入成功！数据已合并。';
+        showToast('存档导入成功！');
+    });
+
+    // ================================================================
+    //  Background Particles
+    // ================================================================
+
+    (function createParticles() {
+        const bg = document.getElementById('bg-canvas');
+        for (let i = 0; i < 20; i++) {
+            const p = document.createElement('div');
+            p.className = 'bg-particle';
+            const size = 2 + Math.random() * 6;
+            p.style.cssText = `
+                width:${size}px; height:${size}px;
+                left:${Math.random()*100}%;
+                animation-duration:${20+Math.random()*30}s;
+                animation-delay:${Math.random()*20}s;
+            `;
+            bg.appendChild(p);
+        }
+    })();
+
+    // ================================================================
+    //  Init
+    // ================================================================
+
+    refreshAll();
+
+    // Auto-refresh when coming back from game
+    window.addEventListener('focus', refreshAll);
+
+    console.log('Ranking page loaded. Player:', currentPlayerId || '(not set)');
+    </script>
+
+</body>
+</html>

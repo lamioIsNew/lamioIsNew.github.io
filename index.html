@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>神庙逃亡 - Temple Run</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            overflow: hidden;
+            background: #0a0a0f;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            cursor: default;
+            user-select: none;
+            height: 100vh;
+        }
+
+        /* ================================================================
+           Background — Pure CSS Temple Atmosphere
+           ================================================================ */
+        #bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 50% -20%, rgba(80,50,30,0.25) 0%, transparent 70%),
+                radial-gradient(ellipse 60% 50% at 50% 100%, rgba(30,20,50,0.15) 0%, transparent 60%),
+                radial-gradient(ellipse 100% 40% at 50% 50%, rgba(20,15,10,0.3) 0%, transparent 70%),
+                linear-gradient(180deg, #0a0a10 0%, #0d0d18 40%, #0f0f1a 70%, #0a0a12 100%);
+        }
+
+        /* ---- Column-style vertical bands ---- */
+        #bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                /* Left columns */
+                linear-gradient(90deg, transparent 5%, rgba(60,50,40,0.06) 5%, rgba(60,50,40,0.06) 6%, transparent 6%),
+                linear-gradient(90deg, transparent 11%, rgba(60,50,40,0.04) 11%, rgba(60,50,40,0.04) 12%, transparent 12%),
+                /* Right columns */
+                linear-gradient(90deg, transparent 88%, rgba(60,50,40,0.04) 88%, rgba(60,50,40,0.04) 89%, transparent 89%),
+                linear-gradient(90deg, transparent 94%, rgba(60,50,40,0.06) 94%, rgba(60,50,40,0.06) 95%, transparent 95%),
+                /* Floor line */
+                linear-gradient(180deg, transparent 88%, rgba(30,25,20,0.08) 88%, rgba(30,25,20,0.08) 88.5%, transparent 88.5%);
+        }
+
+        /* ---- Subtle floor tile pattern ---- */
+        #bg::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 15%;
+            background:
+                repeating-linear-gradient(90deg,
+                    transparent 0px, transparent 38px, rgba(50,40,30,0.04) 38px, rgba(50,40,30,0.04) 40px);
+            mask-image: linear-gradient(180deg, transparent 0%, #000 40%);
+            -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 40%);
+        }
+
+        /* ================================================================
+           Temple Columns (CSS-drawn)
+           ================================================================ */
+        .column {
+            position: fixed;
+            bottom: 12%;
+            width: 28px;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .column::before {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 70vh;
+            background: linear-gradient(90deg,
+                rgba(90,75,60,0.12) 0%,
+                rgba(120,100,80,0.08) 30%,
+                rgba(90,75,60,0.06) 50%,
+                rgba(70,55,40,0.10) 100%
+            );
+            border-radius: 2px;
+            box-shadow: inset 0 1px 0 rgba(255,200,150,0.03);
+        }
+        .column::after {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: -4px;
+            width: 36px;
+            height: 12px;
+            background: linear-gradient(90deg,
+                rgba(120,100,80,0.10) 0%,
+                rgba(150,130,110,0.06) 50%,
+                rgba(120,100,80,0.10) 100%
+            );
+            border-radius: 2px;
+        }
+        .col-left1  { left: 4%; }
+        .col-left2  { left: 10%; bottom: 10%; }
+        .col-right1 { right: 4%; }
+        .col-right2 { right: 10%; bottom: 10%; }
+
+        /* ---- Arch beam ---- */
+        .arch-beam {
+            position: fixed;
+            top: 10%;
+            left: 3%;
+            right: 3%;
+            height: 3px;
+            z-index: 1;
+            pointer-events: none;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(100,85,70,0.08) 8%,
+                rgba(100,85,70,0.04) 20%,
+                rgba(100,85,70,0.06) 80%,
+                rgba(100,85,70,0.08) 92%,
+                transparent 100%
+            );
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .arch-beam-2 {
+            position: fixed;
+            top: 8.5%;
+            left: 3%;
+            right: 3%;
+            height: 2px;
+            z-index: 1;
+            pointer-events: none;
+            background: linear-gradient(90deg,
+                transparent 10%, rgba(80,70,60,0.04) 20%,
+                rgba(80,70,60,0.02) 80%, transparent 90%);
+        }
+
+        /* ---- Pediment (triangle) ---- */
+        .pediment {
+            position: fixed;
+            top: 6%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            pointer-events: none;
+            width: 0;
+            height: 0;
+            border-left: 180px solid transparent;
+            border-right: 180px solid transparent;
+            border-bottom: 60px solid rgba(80,65,50,0.06);
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
+        }
+
+        /* ================================================================
+           Torch Glows (CSS animated)
+           ================================================================ */
+        .torch {
+            position: fixed;
+            bottom: 15%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .torch-pole {
+            width: 3px;
+            height: 80px;
+            margin: 0 auto;
+            background: linear-gradient(180deg, rgba(60,40,20,0.3), rgba(40,30,20,0.2));
+            border-radius: 1px;
+        }
+        .torch-bowl {
+            width: 12px;
+            height: 8px;
+            margin: 0 auto;
+            background: rgba(50,35,20,0.3);
+            border-radius: 50% 50% 40% 40%;
+        }
+        .torch-flame {
+            width: 16px;
+            height: 20px;
+            margin: 0 auto -4px;
+            border-radius: 50% 50% 40% 40%;
+            background: radial-gradient(ellipse at 50% 60%, #ff8833 0%, #ff4400 40%, transparent 70%);
+            animation: flame 0.8s ease-in-out infinite alternate;
+        }
+        .torch-glow {
+            width: 60px;
+            height: 50px;
+            margin: -40px auto 0;
+            border-radius: 50%;
+            background: radial-gradient(ellipse, rgba(255,120,20,0.15) 0%, transparent 70%);
+            animation: glow-pulse 2s ease-in-out infinite alternate;
+        }
+        @keyframes flame {
+            0%   { transform: scaleY(1) scaleX(1); opacity: 0.8; }
+            50%  { transform: scaleY(1.15) scaleX(0.85); opacity: 1; }
+            100% { transform: scaleY(0.9) scaleX(1.1); opacity: 0.7; }
+        }
+        @keyframes glow-pulse {
+            0%   { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 0.6; transform: scale(1.15); }
+        }
+        .torch-1  { left: 6%; }
+        .torch-2  { right: 6%; }
+        .torch-3  { left: 13%; bottom: 20%; }
+        .torch-4  { right: 13%; bottom: 20%; }
+
+        /* ================================================================
+           Floating Particles (CSS animated)
+           ================================================================ */
+        .particle {
+            position: fixed;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,200,150,0.12) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ================================================================
+           Runner Silhouette (pure CSS)
+           ================================================================ */
+        .runner {
+            position: fixed;
+            bottom: 13.5%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            pointer-events: none;
+            animation: runner-breathe 2s ease-in-out infinite;
+        }
+        @keyframes runner-breathe {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-2px); }
+        }
+        .runner-body {
+            width: 16px;
+            height: 26px;
+            margin: 0 auto;
+            background: linear-gradient(180deg, rgba(180,120,60,0.4), rgba(160,100,50,0.3));
+            border-radius: 3px 3px 4px 4px;
+        }
+        .runner-head {
+            width: 12px;
+            height: 12px;
+            margin: -2px auto 0;
+            background: radial-gradient(circle at 50% 45%, rgba(200,150,100,0.3), rgba(180,120,70,0.2));
+            border-radius: 50%;
+        }
+        .runner-scarf {
+            width: 14px;
+            height: 4px;
+            margin: -3px auto 0;
+            background: rgba(200,80,50,0.2);
+            border-radius: 1px;
+            transform: rotate(-5deg);
+        }
+        .runner-legs {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            margin-top: -1px;
+        }
+        .runner-leg {
+            width: 4px;
+            height: 14px;
+            background: rgba(60,40,30,0.25);
+            border-radius: 2px;
+            animation: run-leg 0.4s ease-in-out infinite alternate;
+        }
+        .runner-leg:nth-child(2) {
+            animation-delay: -0.2s;
+        }
+        @keyframes run-leg {
+            0%   { transform: rotate(-15deg); }
+            100% { transform: rotate(15deg); }
+        }
+
+        /* ================================================================
+           Overlay UI
+           ================================================================ */
+        #ui {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+        #ui > * { pointer-events: auto; }
+
+        /* ---- Title ---- */
+        .title-wrapper {
+            position: relative;
+            margin-bottom: 10px;
+        }
+        .title-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            height: 120px;
+            background: radial-gradient(ellipse, rgba(255,180,50,0.25) 0%, transparent 70%);
+            filter: blur(20px);
+            animation: glow-pulse 3s ease-in-out infinite;
+        }
+        @keyframes glow-pulse {
+            0%, 100% { opacity: 0.5; transform: translate(-50%,-50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%,-50%) scale(1.08); }
+        }
+        .main-title {
+            font-size: clamp(58px, 8vw, 96px);
+            font-weight: 900;
+            color: #f5d78a;
+            text-shadow:
+                0 0 20px rgba(255,180,50,0.4),
+                0 0 60px rgba(255,120,20,0.3),
+                0 4px 8px rgba(0,0,0,0.8);
+            letter-spacing: 0.15em;
+            position: relative;
+            z-index: 1;
+            font-family: 'STKaiti','KaiTi','楷体',serif;
+            animation: title-float 4s ease-in-out infinite;
+        }
+        @keyframes title-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        .sub-title {
+            font-size: clamp(14px, 1.8vw, 22px);
+            color: rgba(255,210,130,0.7);
+            letter-spacing: 0.6em;
+            text-shadow: 0 2px 12px rgba(0,0,0,0.8);
+            margin-bottom: 50px;
+            font-family: 'Georgia', serif;
+            text-transform: uppercase;
+        }
+
+        /* ---- Buttons ---- */
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+        }
+        .menu-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 260px;
+            padding: 14px 0;
+            border: 1px solid rgba(255,200,100,0.25);
+            background: linear-gradient(135deg, rgba(40,25,10,0.7), rgba(80,50,20,0.5));
+            color: #e8d5b0;
+            font-size: 18px;
+            font-family: 'STKaiti','KaiTi','楷体',serif;
+            letter-spacing: 0.3em;
+            cursor: pointer;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.35s ease;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 4px;
+        }
+        .menu-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,200,100,0.1), transparent);
+            transition: left 0.6s ease;
+        }
+        .menu-btn:hover::before { left: 100%; }
+        .menu-btn:hover {
+            border-color: rgba(255,200,100,0.6);
+            background: linear-gradient(135deg, rgba(60,35,15,0.85), rgba(120,70,25,0.6));
+            box-shadow: 0 0 25px rgba(255,180,50,0.15), inset 0 0 30px rgba(255,180,50,0.05);
+            transform: scale(1.04);
+            color: #ffddaa;
+        }
+        .menu-btn:active { transform: scale(0.97); }
+        .menu-btn .icon { font-size: 20px; opacity: 0.7; }
+        .menu-btn .arrow {
+            font-size: 14px;
+            opacity: 0;
+            transform: translateX(-8px);
+            transition: all 0.35s ease;
+        }
+        .menu-btn:hover .arrow { opacity: 0.8; transform: translateX(0); }
+        .btn-play .icon { color: #ffcc66; }
+        .btn-rank .icon { color: #88ccff; }
+        .btn-easter .icon { color: #cc88ff; }
+
+        /* ---- Bottom hint ---- */
+        .bottom-hint {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            color: rgba(255,210,150,0.25);
+            font-size: 12px;
+            letter-spacing: 0.2em;
+            font-family: 'Georgia', serif;
+            animation: hint-blink 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes hint-blink {
+            0%, 100% { opacity: 0.25; }
+            50% { opacity: 0.6; }
+        }
+
+        /* ---- Loading screen ---- */
+        #loading {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: #0a0a0f;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s ease;
+        }
+        #loading.hidden { opacity: 0; pointer-events: none; }
+        .loader-bar {
+            width: 200px;
+            height: 2px;
+            background: rgba(255,200,100,0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .loader-bar-inner {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #f5d78a, #ff8833);
+            border-radius: 2px;
+            animation: load-progress 1.8s ease forwards;
+        }
+        @keyframes load-progress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+        .loader-text {
+            color: rgba(255,210,150,0.6);
+            font-size: 14px;
+            font-family: 'Georgia', serif;
+            letter-spacing: 0.3em;
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 600px) {
+            .menu-btn { width: 200px; padding: 12px 0; font-size: 15px; }
+            .main-title { font-size: clamp(40px, 12vw, 58px); }
+            .title-glow { width: 300px; height: 80px; }
+            .column { display: none; }
+            .torch { transform: scale(0.6); bottom: 12%; }
+            .pediment { border-left-width: 100px; border-right-width: 100px; border-bottom-width: 35px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loading">
+        <div class="loader-text">TEMPLE RUN</div>
+        <div class="loader-bar">
+            <div class="loader-bar-inner"></div>
+        </div>
+    </div>
+
+    <!-- Pure CSS Background -->
+    <div id="bg"></div>
+
+    <!-- Temple Columns -->
+    <div class="column col-left1"></div>
+    <div class="column col-left2"></div>
+    <div class="column col-right1"></div>
+    <div class="column col-right2"></div>
+
+    <!-- Arch beams -->
+    <div class="arch-beam"></div>
+    <div class="arch-beam-2"></div>
+
+    <!-- Pediment -->
+    <div class="pediment"></div>
+
+    <!-- Torches -->
+    <div class="torch torch-1">
+        <div class="torch-flame"></div>
+        <div class="torch-bowl"></div>
+        <div class="torch-pole"></div>
+        <div class="torch-glow"></div>
+    </div>
+    <div class="torch torch-2">
+        <div class="torch-flame"></div>
+        <div class="torch-bowl"></div>
+        <div class="torch-pole"></div>
+        <div class="torch-glow"></div>
+    </div>
+    <div class="torch torch-3">
+        <div class="torch-flame"></div>
+        <div class="torch-bowl"></div>
+        <div class="torch-pole"></div>
+        <div class="torch-glow"></div>
+    </div>
+    <div class="torch torch-4">
+        <div class="torch-flame"></div>
+        <div class="torch-bowl"></div>
+        <div class="torch-pole"></div>
+        <div class="torch-glow"></div>
+    </div>
+
+    <!-- Runner Silhouette (CSS only) -->
+    <div class="runner">
+        <div class="runner-head"></div>
+        <div class="runner-scarf"></div>
+        <div class="runner-body"></div>
+        <div class="runner-legs">
+            <div class="runner-leg"></div>
+            <div class="runner-leg"></div>
+        </div>
+    </div>
+
+    <!-- UI Overlay -->
+    <div id="ui">
+        <div class="title-wrapper">
+            <div class="title-glow"></div>
+            <h1 class="main-title">神庙逃亡</h1>
+        </div>
+        <div class="sub-title">✦ Temple Run ✦</div>
+
+        <div class="menu-buttons">
+            <a href="Game.html" class="menu-btn btn-play">
+                <span class="icon">&#9670;</span>
+                <span>开 始 游 戏</span>
+                <span class="arrow">&#8594;</span>
+            </a>
+            <a href="Ranking.html" class="menu-btn btn-rank">
+                <span class="icon">&#9733;</span>
+                <span>排 行 榜</span>
+                <span class="arrow">&#8594;</span>
+            </a>
+            <a href="easterEgg.html" class="menu-btn btn-easter">
+                <span class="icon">&#9881;</span>
+                <span>彩 蛋</span>
+                <span class="arrow">&#8594;</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="bottom-hint">━ SWIPE TO BEGIN ━</div>
+
+    <!-- Pure Vanilla JS: Particles and Interactions -->
+    <script>
+    // ================================================================
+    //  Floating Particles (canvas-free, pure DOM with JS positioning)
+    // ================================================================
+
+    (function createParticles() {
+        for (let i = 0; i < 30; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = 2 + Math.random() * 6;
+            const startX = Math.random() * 100;
+            const startY = 100 + Math.random() * 20; // start below viewport
+            const duration = 20 + Math.random() * 25;
+            const delay = Math.random() * 20;
+            const drift = (Math.random() - 0.5) * 15;
+            p.style.cssText =
+                `width:${size}px;height:${size}px;` +
+                `left:${startX}%;bottom:-${startY}%;` +
+                `opacity:0.15;` +
+                `animation:particle-float${Math.floor(duration/10)} ` +
+                `${duration}s ease-in ${delay}s infinite;`;
+            // Create unique keyframe for this particle's drift
+            const styleId = 'pf' + i;
+            const keyframes =
+                `@keyframes particle-float${Math.floor(duration/10)} {` +
+                `0%{transform:translateY(0) translateX(0);opacity:0;}` +
+                `10%{opacity:0.5;}` +
+                `50%{transform:translateY(-60vh) translateX(${drift}px);opacity:0.4;}` +
+                `90%{opacity:0.2;}` +
+                `100%{transform:translateY(-110vh) translateX(${drift*1.5}px);opacity:0;}}`;
+            if (!document.getElementById(styleId)) {
+                const s = document.createElement('style');
+                s.id = styleId;
+                s.textContent = keyframes;
+                document.head.appendChild(s);
+            }
+            document.body.appendChild(p);
+        }
+    })();
+
+    // ================================================================
+    //  Swipe → Start Game
+    // ================================================================
+
+    let touchStartX = 0, touchStartY = 0, swiped = false;
+
+    document.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        swiped = false;
+    });
+
+    document.addEventListener('touchmove', (e) => {
+        if (swiped) return;
+        const dy = e.touches[0].clientY - touchStartY;
+        if (Math.abs(e.touches[0].clientX - touchStartX) > 40 || Math.abs(dy) > 40) {
+            swiped = true;
+            if (dy < -40) window.location.href = 'Game.html';
+        }
+    }, { passive: true });
+
+    // Keyboard: Enter / Space → start
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            window.location.href = 'Game.html';
+        }
+    });
+
+    // ================================================================
+    //  Distant temple parallax (mousemove)
+    // ================================================================
+
+    document.addEventListener('mousemove', (e) => {
+        const x = (e.clientX / window.innerWidth - 0.5) * 6;
+        const y = (e.clientY / window.innerHeight - 0.5) * 3;
+        document.querySelectorAll('.column').forEach(col => {
+            col.style.transform = `translateX(${x * 0.5}px) translateY(${y * 0.5}px)`;
+        });
+        document.querySelectorAll('.torch').forEach(t => {
+            t.style.transform = `translateX(${x * 0.3}px) translateY(${y * 0.3}px)`;
+        });
+    });
+
+    // ================================================================
+    //  Hide loading screen after animation completes
+    // ================================================================
+
+    setTimeout(() => {
+        document.getElementById('loading').classList.add('hidden');
+    }, 2000);
+    </script>
+
+</body>
+</html>
