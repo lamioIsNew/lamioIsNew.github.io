@@ -1,0 +1,597 @@
+<!--this is a gift for father's day-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>父亲节快乐 ❤️ 老爸</title>
+    <style>
+        /* ===== 全局重置 & 字体 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(145deg, #1a2a3a 0%, #0f1a26 100%);
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* ===== 主卡片 ===== */
+        .card {
+            max-width: 780px;
+            width: 100%;
+            background: rgba(255, 248, 235, 0.92);
+            backdrop-filter: blur(6px);
+            border-radius: 64px 64px 48px 48px;
+            padding: 48px 40px 56px;
+            box-shadow:
+                0 30px 60px rgba(0, 0, 0, 0.6),
+                0 0 0 2px rgba(255, 215, 140, 0.3) inset,
+                0 0 0 4px rgba(255, 230, 200, 0.1) inset;
+            position: relative;
+            transition: transform 0.3s ease;
+            text-align: center;
+            border: 1px solid rgba(255, 215, 140, 0.25);
+        }
+
+        .card:hover {
+            transform: scale(1.005);
+        }
+
+        /* ===== 装饰光晕 ===== */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 260px;
+            height: 120px;
+            background: radial-gradient(ellipse, rgba(255, 200, 100, 0.35) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== 顶部勋章 ===== */
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #f6b26b, #e8923a);
+            color: #1e2b36;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            padding: 8px 26px;
+            border-radius: 60px;
+            text-transform: uppercase;
+            box-shadow: 0 6px 18px rgba(232, 146, 58, 0.4);
+            position: relative;
+            z-index: 2;
+            margin-bottom: 18px;
+            border: 1px solid rgba(255, 255, 200, 0.5);
+        }
+
+        /* ===== 头像 / 图标 ===== */
+        .avatar {
+            font-size: 78px;
+            line-height: 1;
+            margin: 6px 0 10px;
+            filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.2));
+            position: relative;
+            z-index: 2;
+            display: inline-block;
+            animation: float 3.5s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+
+        /* ===== 标题 ===== */
+        .title {
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: #1e2b36;
+            letter-spacing: 2px;
+            margin: 8px 0 4px;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 10px rgba(255, 215, 140, 0.3);
+        }
+
+        .title span {
+            display: inline-block;
+            background: linear-gradient(135deg, #d48b3c, #b56a2a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: none;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #4a3f32;
+            font-weight: 400;
+            letter-spacing: 6px;
+            margin-top: -2px;
+            margin-bottom: 28px;
+            border-bottom: 2px dashed rgba(180, 130, 70, 0.25);
+            padding-bottom: 18px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ===== 祝福语 ===== */
+        .message {
+            background: rgba(255, 235, 210, 0.5);
+            border-radius: 40px;
+            padding: 28px 30px;
+            margin: 10px 0 28px;
+            border-left: 6px solid #e8923a;
+            border-right: 6px solid #e8923a;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            position: relative;
+            z-index: 2;
+        }
+
+        .message p {
+            font-size: 1.25rem;
+            line-height: 1.8;
+            color: #2d241a;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+        }
+
+        .message .heart {
+            color: #c0392b;
+            display: inline-block;
+            animation: pulse 1.4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.3);
+            }
+        }
+
+        .signature {
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: #6b5a48;
+            margin-top: 12px;
+            font-style: italic;
+            letter-spacing: 2px;
+        }
+
+        /* ===== 互动按钮区 ===== */
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 14px 18px;
+            margin: 24px 0 18px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn {
+            background: rgba(235, 215, 185, 0.5);
+            border: none;
+            padding: 14px 32px;
+            border-radius: 60px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2d241a;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            transition: all 0.25s ease;
+            border: 1px solid rgba(200, 160, 110, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.5px;
+            flex: 1 0 auto;
+            justify-content: center;
+            min-width: 140px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #f6b26b, #e8923a);
+            color: #1e2b36;
+            border-color: rgba(255, 200, 100, 0.4);
+            box-shadow: 0 8px 24px rgba(232, 146, 58, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 14px 32px rgba(232, 146, 58, 0.45);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(8px);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px) scale(1.02);
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+        /* ===== 动态反馈区 ===== */
+        .feedback {
+            min-height: 52px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 12px 0 6px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #3d3227;
+            background: rgba(255, 215, 140, 0.15);
+            border-radius: 60px;
+            padding: 8px 24px;
+            transition: all 0.3s ease;
+            border: 1px dashed rgba(180, 130, 70, 0.2);
+            position: relative;
+            z-index: 2;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .feedback .emoji-big {
+            font-size: 2rem;
+            line-height: 1;
+        }
+
+        /* ===== 彩蛋 - 星星飘落 ===== */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            top: -20px;
+            width: 12px;
+            height: 12px;
+            opacity: 0.8;
+            border-radius: 2px;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) rotate(720deg) scale(0.2);
+                opacity: 0;
+            }
+        }
+
+        /* ===== 底部 ===== */
+        .footer {
+            margin-top: 32px;
+            font-size: 0.8rem;
+            color: #8a7a66;
+            letter-spacing: 1px;
+            border-top: 1px solid rgba(180, 130, 70, 0.15);
+            padding-top: 22px;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer span {
+            opacity: 0.7;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 550px) {
+            .card {
+                padding: 32px 20px 40px;
+                border-radius: 40px;
+            }
+            .title {
+                font-size: 2.4rem;
+            }
+            .subtitle {
+                font-size: 1rem;
+                letter-spacing: 4px;
+            }
+            .message p {
+                font-size: 1.05rem;
+            }
+            .avatar {
+                font-size: 60px;
+            }
+            .btn {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+                min-width: 100px;
+                flex: 1 1 100%;
+            }
+            .actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .feedback {
+                font-size: 0.95rem;
+                padding: 8px 16px;
+            }
+            .badge {
+                font-size: 0.7rem;
+                padding: 6px 18px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .title {
+                font-size: 2rem;
+            }
+            .card {
+                padding: 24px 14px 32px;
+            }
+        }
+        #feedbackText {
+    white-space: pre-wrap;
+}
+
+    </style>
+</head>
+<body>
+
+    <!-- ====== 主卡片 ====== -->
+    <div class="card" id="mainCard">
+
+        <!-- 勋章 -->
+        <div class="badge">🌟 超级英雄 · 父亲节</div>
+
+        <!-- 头像 -->
+        <div class="avatar">👨‍👧‍👦</div>
+
+        <!-- 标题 -->
+        <h1 class="title">
+            老爸，<span>节日快乐</span>
+        </h1>
+        <div class="subtitle">❤️ 你是我的靠山 · 我的灯塔 ❤️</div>
+        <div class="subtitle">点一下界面有惊喜</div>
+        <!-- 祝福语 -->
+        <div class="message" id="blessingMessage">
+            <p>
+                Happy Father's Day!<br />
+                你永远是我心中最酷的 <span class="heart">♥</span> 老爸！
+            </p>
+            <div class="signature">—— Lumio 26.6.21</div>
+        </div>
+
+        <!-- 互动按钮 -->
+        <div class="actions">
+            <button class="btn btn-primary" id="btnLove">
+                💖 祝福语
+            </button>
+            <button class="btn btn-secondary" id="btnStar">
+                ⭐ 许个愿
+            </button>
+            <button class="btn btn-secondary" id="btnHug">
+                🤗 抱抱老爸
+            </button>
+        </div>
+
+        <!-- 反馈区 -->
+        <div class="feedback" id="feedbackArea">
+            <span class="emoji-big">✨</span>
+            <span id="feedbackText">点击按钮，给老爸一个惊喜！</span>
+        </div>
+
+        <!-- 底部 -->
+        <div class="footer">
+            <span>🏡 家 · 永远的港湾</span>
+            <span>📅 2026 · 父亲节</span>
+        </div>
+    </div>
+
+    <!-- ====== 彩蛋容器 ====== -->
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ----- DOM 引用 -----
+            const feedbackText = document.getElementById('feedbackText');
+            const feedbackEmoji = document.querySelector('.feedback .emoji-big');
+            const btnLove = document.getElementById('btnLove');
+            const btnStar = document.getElementById('btnStar');
+            const btnHug = document.getElementById('btnHug');
+            const confettiContainer = document.getElementById('confettiContainer');
+
+            // ----- 工具：随机颜色（暖色系） -----
+            function getWarmColor() {
+                const colors = [
+                    '#f6b26b', '#e8923a', '#f0c27a', '#e6a85c',
+                    '#d48b3c', '#f7d08a', '#ffb87c', '#f5a55a',
+                    '#f2c94c', '#f2994a', '#eb8f3a', '#f9d28c'
+                ];
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+
+            // ----- 撒花效果（星星/彩片） -----
+            function launchConfetti(count = 60) {
+                const container = confettiContainer;
+                // 清除之前残留
+                container.innerHTML = '';
+
+                for (let i = 0; i < count; i++) {
+                    const piece = document.createElement('div');
+                    piece.className = 'confetti-piece';
+                    const size = 8 + Math.random() * 16;
+                    const isCircle = Math.random() > 0.5;
+                    piece.style.width = size + 'px';
+                    piece.style.height = isCircle ? size + 'px' : (size * 0.6) + 'px';
+                    piece.style.background = getWarmColor();
+                    piece.style.borderRadius = isCircle ? '50%' : '2px';
+                    piece.style.left = Math.random() * 100 + '%';
+                    piece.style.animationDuration = (2.5 + Math.random() * 2.5) + 's';
+                    piece.style.animationDelay = (Math.random() * 1.2) + 's';
+                    piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    // 轻微随机旋转
+                    container.appendChild(piece);
+                }
+
+                // 自动清除（防止过多DOM）
+                setTimeout(() => {
+                    container.innerHTML = '';
+                }, 5000);
+            }
+
+            // ----- 更新反馈区（带动画感） -----
+            function setFeedback(emoji, text, isSpecial = false) {
+                feedbackEmoji.textContent = emoji;
+                feedbackText.textContent = text;
+                // 轻微弹动
+                const area = document.getElementById('feedbackArea');
+                area.style.transition = 'transform 0.15s ease, background 0.3s ease';
+                area.style.transform = 'scale(1.04)';
+                if (isSpecial) {
+                    area.style.background = 'rgba(255, 215, 140, 0.35)';
+                    area.style.borderColor = '#e8923a';
+                } else {
+                    area.style.background = 'rgba(255, 215, 140, 0.15)';
+                    area.style.borderColor = 'rgba(180, 130, 70, 0.2)';
+                }
+                setTimeout(() => {
+                    area.style.transform = 'scale(1)';
+                }, 180);
+            }
+
+            // ----- 按钮事件 -----
+            // 1. 送心
+            btnLove.addEventListener('click', function() {
+                setFeedback('💖', `❤️ You are the Star that navagates me when I'm in the dark \n
+                Wish you a HEALTHY body and a HAPPY life
+                `, true);
+                launchConfetti(70);
+                // 额外爱心动画（小彩蛋）
+                const msg = document.getElementById('blessingMessage');
+                msg.style.transition = 'box-shadow 0.3s ease';
+                msg.style.boxShadow = '0 0 0 4px rgba(232, 146, 58, 0.3), 0 8px 24px rgba(0,0,0,0.08)';
+                setTimeout(() => {
+                    msg.style.boxShadow = 'none';
+                }, 800);
+            });
+
+            // 2. 许愿
+            btnStar.addEventListener('click', function() {
+                const wishes = [
+                    '🌟 愿老爸身体健康，万事如意！',
+                    '⭐ 愿你每天都笑口常开，幸福满满！',
+                    '✨ 愿时光慢些，让我多陪陪你！',
+                    '🌠 老爸，你永远是我的超级英雄！',
+                    '🌈 愿你一切顺心，平安喜乐！'
+                ];
+                const randomWish = wishes[Math.floor(Math.random() * wishes.length)];
+                setFeedback('⭐', randomWish, true);
+                launchConfetti(55);
+            });
+
+            // 3. 抱抱
+            btnHug.addEventListener('click', function() {
+                setFeedback('🤗', '老爸，给你一个大大的拥抱！你辛苦了！', true);
+                launchConfetti(50);
+                // 额外：显示一个抱抱动画效果（震动）
+                const card = document.getElementById('mainCard');
+                card.style.transition = 'transform 0.2s ease';
+                card.style.transform = 'scale(1.02) rotate(0.5deg)';
+                setTimeout(() => {
+                    card.style.transform = 'scale(1) rotate(0deg)';
+                }, 300);
+            });
+
+            // ----- 页面加载时的小惊喜（延迟撒花） -----
+            window.addEventListener('load', function() {
+                setTimeout(() => {
+                    setFeedback('🎉', '🎈 老爸，父亲节快乐！点击按钮有惊喜！', false);
+                    // 轻轻撒一点欢迎花
+                    launchConfetti(30);
+                }, 500);
+            });
+
+            // ----- 如果点击卡片空白区域，也来个温和反馈（可选） -----
+            document.getElementById('mainCard').addEventListener('click', function(e) {
+                // 如果点击的是卡片本身或背景，不干扰按钮
+                if (e.target === this || e.target.classList.contains('card')) {
+                    setFeedback('💫', '老爸，你永远是我的骄傲！', false);
+                    launchConfetti(20);
+                }
+            });
+
+            // ----- 移动端触摸优化 (防止双击缩放干扰) -----
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('touchstart', function(e) {
+                    // 只是让触感更灵敏，无需额外操作
+                }, { passive: true });
+            });
+
+        })();
+    </script>
+
+    <!-- 放在 <body> 末尾或合适位置 -->
+<audio id="bgMusic" loop>
+  <source src="Father-chopstickBro.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  // 页面加载后，尝试自动播放（若被浏览器拦截，则静默失败）
+  window.addEventListener('load', function() {
+    var audio = document.getElementById('bgMusic');
+    // 尝试播放，如果失败则忽略（等用户点击页面时再触发）
+    audio.play().catch(function(error) {
+      console.log('自动播放被阻止，等待用户交互...');
+    });
+  });
+
+  // 用户点击页面任意位置时，如果音乐暂停则播放（解决自动播放限制）
+  document.addEventListener('click', function() {
+    var audio = document.getElementById('bgMusic');
+    if (audio.paused) {
+      audio.play();
+    }
+  });
+</script>
+</body>
+</html>
