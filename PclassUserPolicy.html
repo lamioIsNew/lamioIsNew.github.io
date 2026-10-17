@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="励学班（Pclass）用户协议、隐私政策与用户数据保存协议（0.1.1 测试版）">
+    <title>励学班（Pclass）用户协议与隐私政策</title>
+    <style>
+        :root {
+            --text-color: #333333;
+            --bg-color: #ffffff;
+            --secondary-text: #666666;
+            --border-color: #eaeaea;
+            --heading-color: #1a1a1a;
+            --accent-color: #007aff;
+            --highlight-bg: rgba(0, 122, 255, 0.05);
+            --warn-bg: #fff7e6;
+            --warn-border: #f0a020;
+            --warn-text: #7a4b00;
+            --contact-bg: rgba(0, 0, 0, 0.03);
+            --table-head: #f6f8fb;
+            --code-bg: #f2f4f7;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --text-color: #d1d1d1;
+                --bg-color: #121212;
+                --secondary-text: #999999;
+                --border-color: #333333;
+                --heading-color: #ffffff;
+                --accent-color: #0a84ff;
+                --highlight-bg: rgba(10, 132, 255, 0.1);
+                --warn-bg: rgba(240, 160, 32, 0.12);
+                --warn-border: #f0a020;
+                --warn-text: #ffd591;
+                --contact-bg: rgba(255, 255, 255, 0.05);
+                --table-head: #1b1b1b;
+                --code-bg: #1e1e1e;
+            }
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.8;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 32px 24px 56px;
+            -webkit-text-size-adjust: 100%;
+        }
+        h1 {
+            font-size: 26px;
+            color: var(--heading-color);
+            text-align: center;
+            margin: 0 0 12px;
+            font-weight: 600;
+        }
+        .meta-info {
+            text-align: center;
+            color: var(--secondary-text);
+            font-size: 14px;
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            line-height: 1.7;
+        }
+        .meta-info span { display: inline-block; margin: 0 6px; }
+        .test-banner {
+            background: var(--warn-bg);
+            border: 1px solid var(--warn-border);
+            border-left-width: 5px;
+            color: var(--warn-text);
+            padding: 16px 18px;
+            border-radius: 6px;
+            margin: 0 0 26px;
+            font-size: 14px;
+        }
+        .test-banner strong { color: var(--warn-text); }
+        h2 {
+            font-size: 19px;
+            color: var(--heading-color);
+            margin-top: 36px;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+        }
+        h3 {
+            font-size: 16px;
+            color: var(--heading-color);
+            margin-top: 24px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        p { margin: 0 0 16px; text-align: justify; }
+        ul, ol { padding-left: 22px; margin: 0 0 16px; }
+        li { margin-bottom: 8px; text-align: justify; }
+        strong { color: var(--heading-color); font-weight: 600; }
+        a { color: var(--accent-color); text-decoration: none; word-break: break-all; }
+        a:hover { text-decoration: underline; }
+        .highlight-box {
+            background-color: var(--highlight-bg);
+            border-left: 4px solid var(--accent-color);
+            padding: 16px 18px;
+            margin: 22px 0;
+            border-radius: 4px;
+            font-size: 15px;
+        }
+        .toc {
+            background: var(--contact-bg);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 24px 0 8px;
+            font-size: 14px;
+            columns: 2;
+            column-gap: 28px;
+        }
+        .toc a { display: block; margin-bottom: 6px; }
+        .table-wrap { overflow-x: auto; margin: 14px 0 20px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            min-width: 620px;
+        }
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: var(--table-head); color: var(--heading-color); font-weight: 600; }
+        code {
+            background: var(--code-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 13px;
+            word-break: break-all;
+        }
+        .contact-section {
+            background-color: var(--contact-bg);
+            padding: 18px 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .contact-section p { margin-bottom: 8px; }
+        footer {
+            margin-top: 40px;
+            padding-top: 18px;
+            border-top: 1px solid var(--border-color);
+            color: var(--secondary-text);
+            font-size: 13px;
+            text-align: center;
+        }
+        @media (max-width: 560px) {
+            body { padding: 20px 16px 40px; }
+            h1 { font-size: 21px; }
+            h2 { font-size: 17px; }
+            h3 { font-size: 15px; }
+            p, li { font-size: 15px; }
+            .meta-info { font-size: 13px; }
+            .toc { columns: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>励学班（Pclass）用户协议与隐私政策</h1>
+    <div class="meta-info">
+        <span>更新日期：2026-10-17</span> | <span>生效日期：2026-10-17</span><br>
+        <span>适用版本：Pclass 0.1.1（versionCode 1001）及后续测试版本</span><br>
+        <span>包名：com.PromClass.1.0.0</span><br>
+        <span>应用开发者：卢奕横</span> | <span>合规与上架主体（监护人）：卢长伟</span>
+    </div>
+
+    <div class="test-banner">
+        <strong>测试版声明（重要）：</strong>Pclass 0.1.1 是面向老师试用的<strong>内测版本</strong>，不是正式商业版本。
+        在线 AI、云备份、反馈服务均<strong>仅供测试</strong>，可能随时调整、中断或清空数据，不构成生产服务承诺。本在线版目前用于封闭测试/侧载，<strong>尚未完成 APP备案</strong>，不通过应用商店公开分发。
+        请<strong>不要将本应用作为学生操行分的唯一记录</strong>，务必定期导出备份；验收和试用请优先使用测试班级、测试数据。
+    </div>
+
+    <div class="highlight-box">
+        <strong>数据存在哪里（一句话）：</strong>核心班级数据只保存在你的设备本地；只有你主动使用云备份时，才会经 tcamp44（腾讯云中国香港）暂存，随后归档到项目自有的 Ubuntu 主机（中国重庆）；在线 AI 请求经项目 AI 服务（腾讯云成都）转给 DeepSeek；反馈内容经 tcamp44 入口保存在 Ubuntu（重庆）的反馈数据库。云备份与反馈涉及香港中转，属于跨境传输；所有在线服务均为测试用途。
+    </div>
+
+    <p>本文件同时包含《用户协议》《隐私政策》和《用户数据保存协议》。你安装、启动或使用本应用，即表示已阅读并同意本文件全部内容；如不同意，请停止使用并卸载本应用。如你未满 18 周岁，请在监护人陪同下阅读并在取得同意后使用。</p>
+
+    <div class="toc">
+        <a href="#s1">1. 协议范围与接受</a>
+        <a href="#s2">2. 我们是谁</a>
+        <a href="#s3">3. 应用功能与联网边界</a>
+        <a href="#s4">4. 权限与系统能力</a>
+        <a href="#s5">5. 数据分类与存储地点</a>
+        <a href="#s6">6. 用户数据保存协议</a>
+        <a href="#s7">7. 数据共享与第三方</a>
+        <a href="#s8">8. 数据保存期限与删除</a>
+        <a href="#s9">9. 你的权利</a>
+        <a href="#s10">10. 未成年人信息</a>
+        <a href="#s11">11. 使用规范</a>
+        <a href="#s12">12. 知识产权</a>
+        <a href="#s13">13. 免责声明</a>
+        <a href="#s14">14. 协议变更</a>
+        <a href="#s15">15. 法律与争议</a>
+        <a href="#s16">16. 联系方式</a>
+        <a href="#s17">17. 备案与发布状态</a>
+    </div>
+
+    <h2 id="s1">1. 协议范围与接受</h2>
+    <p>1.1 本文件适用于励学班（Pclass，包名 <code>com.PromClass.1.0.0</code>）0.1.1 测试版及其后续测试版本。Pclass 是一款面向教师、用于班级操行分记录与统计的教学辅助工具，不是学校官方系统，也不替代学校的正式评价与处分决定。</p>
+    <p>1.2 你安装、启动或使用本应用，即视为你已阅读、理解并同意本文件。若你不同意任一条款，请立即停止使用并卸载应用。</p>
+    <p>1.3 本文件中“你”指使用本应用的教师或其他使用者；“我们”指应用开发者卢奕横及其监护/合规主体卢长伟；“测试服务”指本版本提供的在线 AI、云备份、反馈等联网功能。</p>
+
+    <h2 id="s2">2. 我们是谁</h2>
+    <p>本应用由开发者<strong>卢奕横</strong>设计开发，由其法定监护人<strong>卢长伟</strong>依法履行上架与合规义务。你可以通过本文件第 16 节的邮箱或应用内反馈入口联系我们。</p>
+    <p>我们不是学校、教育主管部门或云服务商；本应用中的班级数据由使用它的教师自行录入、管理和负责。</p>
+
+    <h2 id="s3">3. 应用功能与联网边界</h2>
+    <p>3.1 <strong>核心功能在本机完成</strong>：拍照识别记分册、花名册导入、操行分记录、统计与可视化、生成报表、导出、本地 AI 界面渲染等，均在你的设备本地运行。核心数据默认只保存在你的设备上。</p>
+    <p>3.2 <strong>可选联网功能（测试用途）</strong>：</p>
+    <ul>
+        <li><strong>在线 AI 整理</strong>：目前仅在开发者模式开放，用于把班级资料整理成可导入的结构；使用时会向你选择使用的项目 AI 服务发送你主动提交的提示词、班级资料或文件。</li>
+        <li><strong>云备份</strong>：仅在你主动点击“立即备份”时上传班级快照；账号由本机匿名标识自动生成，无需注册、无需手机号。</li>
+        <li><strong>帮助与反馈</strong>：打开独立的反馈网页；只有你主动填写并提交时，反馈内容才会发送到反馈服务。</li>
+    </ul>
+    <p>3.3 除上述你主动发起的操作外，本应用不会在后台自行上传你的班级数据。本应用<strong>不包含广告 SDK、行为分析 SDK、远程崩溃上报 SDK</strong>，不会出售你的数据。</p>
+
+    <h2 id="s4">4. 权限与系统能力</h2>
+    <p>本应用仅申请以下两项权限：</p>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>权限</th><th>类型</th><th>用途</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>ohos.permission.CAMERA</code>（相机）</td><td>用户授权，首次使用时弹窗申请</td><td>拍摄记分册/表格照片，用于端侧文字识别。可在系统“设置 → 应用 → Pclass → 权限”中随时关闭；关闭后仅拍照识别不可用。</td></tr>
+                <tr><td><code>ohos.permission.INTERNET</code>（网络）</td><td>普通权限，无需用户确认</td><td>在线 AI、云备份、反馈页。</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <p>此外，应用会使用以下系统能力（不涉及额外权限申请）：</p>
+    <ul>
+        <li><strong>相机</strong>：仅在“扫描登记 → 拍照”时使用；照片保存在应用私有目录，<strong>不会写入系统相册</strong>。</li>
+        <li><strong>剪贴板</strong>：只有你主动点击“从剪贴板粘贴”时读取剪贴板文本；复制提示词或报错信息时会写入剪贴板。应用不会在后台读取剪贴板。</li>
+        <li><strong>系统文件选择器</strong>：导入花名册/操行分（Excel/CSV）、规则文档（docx）、AI 建班资料（xlsx/csv/docx/txt/pdf）等，均由你主动选择；应用只读取你选中的文件。</li>
+        <li><strong>学生头像（系统图片选择器）</strong>：只在你主动点击“更换头像”并选择一张图片时，通过系统图片选择器读取你选中的那一张图片，复制到应用私有目录 <code>files/avatars/</code>；不会批量读取相册，头像不参与云备份。</li>
+        <li><strong>本地存储</strong>：使用系统 SQLite 数据库和应用私有文件目录保存数据。</li>
+        <li><strong>端侧文字识别</strong>：优先使用应用内置的 PP-OCR 模型（onnxruntime，完全离线）；不可用时回退到华为 CoreVisionKit 端侧识别。两者均不上传图片。</li>
+        <li><strong>内嵌网页容器（WebView）</strong>：本地 AI 界面使用禁网沙箱渲染，禁止网络、文件访问、本地存储、弹窗和下载；反馈页是普通联网网页，仅在你主动打开时联网。</li>
+        <li><strong>系统数据备份能力（EntryBackupAbility）</strong>：用于把应用私有数据备份到你的设备本地或你个人的云端空间；我们不会主动读取或上传这些系统备份。</li>
+    </ul>
+    <p>本应用<strong>不申请也不使用</strong>位置、麦克风、通讯录、日历、短信、通话记录、蓝牙、相册批量读写、后台运行等权限；<strong>不读取 OAID，不申请跟踪权限</strong>。学生头像只通过系统图片选择器读取你主动选中的单张图片。</p>
+
+    <h2 id="s5">5. 数据分类与存储地点</h2>
+    <p>下面这张表说明本应用会处理哪些数据、分别存放在哪里、用来做什么、保存多久。请重点阅读。</p>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>数据 / 场景</th><th>存储位置</th><th>用途</th><th>保存期限</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>花名册、操行记录、小组、规则集、AI 界面、应用配置</td>
+                    <td><strong>你的设备本地</strong>：应用私有沙箱中的 SQLite 数据库 <code>promotive.db</code> 与私有文件目录</td>
+                    <td>核心的记录、统计、报表、导出功能</td>
+                    <td>直到你在应用内删除/重置数据，或卸载应用</td>
+                </tr>
+                <tr>
+                    <td>扫描照片、校正后的照片、学生头像</td>
+                    <td><strong>你的设备本地</strong>：应用私有文件目录（<code>files/</code>）</td>
+                    <td>拍照识别、预览、头像展示</td>
+                    <td>直到你删除/重置数据，或卸载应用；<strong>不参与云备份</strong></td>
+                </tr>
+                <tr>
+                    <td>本机匿名标识 AppUID、设备随机编号</td>
+                    <td>设备本地 <code>files/pclass_device.id</code>；使用云备份/在线 AI 时，服务器保存账号映射与用量</td>
+                    <td>校验请求来自本应用、区分云备份空间、限流与防滥用</td>
+                    <td>直到你申请删除账号数据，或相关测试服务停止并清理</td>
+                </tr>
+                <tr>
+                    <td>云备份快照</td>
+                    <td><strong>tcamp44 中转服务器</strong>（<code>www.tcamp44.cn</code>，腾讯云<strong>中国香港</strong>）暂存；随后归档到<strong>项目自有的 Ubuntu 主机</strong>（中国重庆）</td>
+                    <td>备份与恢复班级数据</td>
+                    <td>直到你在应用内删除或申请删除；tcamp44 暂存副本在成功同步后删除，通常不超过 7 天</td>
+                </tr>
+                <tr>
+                    <td>在线 AI 请求内容（提示词、班级资料、上传文件）</td>
+                    <td>项目自建的 AI 服务（腾讯云成都，HTTPS）在内存/临时文件中处理；必要时转发给 <strong>DeepSeek 官方 API</strong>（中国境内）</td>
+                    <td>生成你请求的整理、分析或界面结果</td>
+                    <td>按请求临时处理；临时文件在解析后删除；<strong>不长期保存班级内容档案</strong></td>
+                </tr>
+                <tr>
+                    <td>反馈内容与技术信息</td>
+                    <td><strong>Ubuntu 反馈服务</strong>的 SQLite 数据库（<code>/data/feedback.db</code>，容器命名卷，主机位于中国重庆）；公网入口经 tcamp44 中国香港中转</td>
+                    <td>处理你的反馈、排查问题</td>
+                    <td>直到反馈处理完成并由管理员删除，或你申请删除</td>
+                </tr>
+                <tr>
+                    <td>服务器运行日志</td>
+                    <td>tcamp44（中国香港）、项目 Ubuntu（中国重庆）、项目 AI 服务（腾讯云成都）的运行日志</td>
+                    <td>安全防护、限流、故障排查</td>
+                    <td>按服务器运维策略保留；不用于广告或画像</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>5.1 设备本地</h3>
+    <p>核心数据保存在 HarmonyOS 应用私有沙箱中：SQLite 数据库 <code>promotive.db</code> 保存学生、记录、花名册、小组、配置、AI 界面等；<code>files/</code> 目录保存扫描照片、校正照片、学生头像和本机匿名标识文件。它们不会写入系统相册，其他应用无法直接读取。卸载应用会删除该沙箱中的全部本地数据。</p>
+
+    <h3>5.2 云备份的存储路径</h3>
+    <p>云备份只有你主动点击“立即备份”时才会发生。备份快照包含：花名册（姓名、学号、小组）、操行记录（姓名、分值、原因、日期）、小组、规则集、AI 界面和应用配置；<strong>不包含扫描照片、校正照片、学生头像，也不包含以 <code>cloud_</code> 开头的敏感配置</strong>。</p>
+    <p>上传路径为：你的设备 → <code>www.tcamp44.cn/pclass/backup/*</code>（腾讯云<strong>中国香港</strong>暂存）→ 每 7 天批量同步 → 项目自有 Ubuntu 主机（<strong>中国重庆</strong>）的 <code>/var/lib/pclass/backups/&lt;AppUID&gt;/</code>。同步成功后，tcamp44 上的暂存副本会被删除。Ubuntu 上每个账号默认最多保存 <strong>60 份备份、总计 200MB</strong>；你可以在应用内逐条删除备份。</p>
+
+    <h3>5.3 在线 AI 的处理路径</h3>
+    <p>在线 AI 目前仅在开发者模式开放，属于测试功能。你主动发起请求时，应用会通过 HTTPS 把提示词、你粘贴/选择的班级资料或上传的文件，连同本机 AppUID，发送到项目自建的 AI 服务（腾讯云成都）；该服务提取文本后转发给 DeepSeek 官方 API，并把生成结果流式返回应用。上传文件在服务器内存或临时文件中解析，PDF 临时文件在解析后删除；服务器不把班级内容作为业务档案长期保存，仅保留必要的运行日志（如时间、请求结果、错误信息）。请不要上传你无权共享的他人资料。</p>
+
+    <h3>5.4 反馈页的存储路径</h3>
+    <p>“设置 → 帮助与反馈”会打开独立网页 <code>https://www.tcamp44.cn/pclass/feedback/</code>；该入口经腾讯云<strong>中国香港</strong>中转。只有你填写并提交反馈时，反馈内容才会发送到项目 Ubuntu 主机（<strong>中国重庆</strong>）上的反馈服务。反馈服务会把反馈内容与必要的技术信息（提交时间、来源页、Referer、浏览器标识、IP 地址、语言、屏幕/时区/平台信息等）保存到其 SQLite 数据库（<code>/data/feedback.db</code>），用于处理反馈、防滥用和排查问题；管理员可以导出这些反馈。你可以通过第 16 节邮箱申请删除你提交的反馈。</p>
+
+    <h3>5.5 我们不收集的数据</h3>
+    <p>本应用不读取 OAID，不收集手机号、通讯录、位置、麦克风、短信、通话记录、蓝牙设备、相册批量内容或广告标识；不包含广告、画像、行为分析或远程崩溃上报 SDK。学生头像仅通过系统图片选择器读取你主动选中的单张图片。</p>
+
+    <h2 id="s6">6. 用户数据保存协议</h2>
+    <p>本节是你就班级数据、学生数据的保存与处理与我们达成的专门约定。</p>
+
+    <h3>6.1 数据归属</h3>
+    <p>你录入的花名册、操行记录、小组、规则、AI 界面等班级数据归你或你所在学校所有。我们仅在提供你主动使用的云备份、在线 AI、反馈等服务所必需的范围内处理这些数据，不取得你的数据所有权。</p>
+
+    <h3>6.2 你的授权义务</h3>
+    <p>你应确保你录入、上传、处理学生数据的行为具有合法依据：</p>
+    <ul>
+        <li>已取得学校、学生或其监护人必要的授权与告知；</li>
+        <li>只录入完成操行分管理所必需的信息，例如姓名、学号、小组、分值、原因、日期；</li>
+        <li>不录入身份证号、家庭住址、联系电话、健康情况、成绩排名之外的敏感信息等非必要内容；</li>
+        <li>可使用学号、化名或测试数据代替真实姓名，以降低暴露风险；</li>
+        <li>涉及未成年人的，应遵守《个人信息保护法》《未成年人保护法》等适用法律，并取得监护人同意或其他合法依据。</li>
+    </ul>
+
+    <h3>6.3 安全保管</h3>
+    <p>本机数据与云备份的访问依赖设备上的 AppUID。请为设备设置锁屏密码，不随意把已登录/已配置的设备交给他人使用；不要在不信任的网络环境下使用在线功能。我们会采用 HTTPS、访问控制、签名校验、限流等措施保护测试服务，但任何系统都无法保证绝对安全。</p>
+
+    <h3>6.4 备份与数据丢失</h3>
+    <p>测试版可能存在缺陷、数据迁移或清空测试数据的情况。请定期使用应用内的导出功能保存班级数据，并自行保留副本；云备份是辅助手段，不能替代你的本地导出。因你未备份、误删除、设备损坏、卸载应用或测试服务调整造成的数据丢失，由你自行承担；法律另有规定的除外。</p>
+
+    <h3>6.5 删除与留存</h3>
+    <p>你可以在应用内“设置 → 数据 → 重置一切数据”清空全部本地数据，在“账号与云备份”中逐条删除云端备份，或卸载应用删除本地沙箱。服务器侧的匿名账号、运行日志、反馈记录等，可按第 8、9 节申请删除。删除后不可恢复。</p>
+
+    <h3>6.6 跨境传输</h3>
+    <p>本测试服务的部署情况如下：tcamp44 公网入口与云备份暂存位于<strong>中国香港</strong>（腾讯云）；Ubuntu 归档主机与反馈数据库位于<strong>中国重庆</strong>；在线 AI 服务位于<strong>中国成都</strong>（腾讯云）；DeepSeek 在中国境内处理。使用云备份或反馈时，数据会经中国香港中转，云备份还会在香港暂存，属于跨境传输；在线 AI 不经过香港。若你不同意该跨境传输，请不要使用云备份/反馈，改用本地导出；测试阶段建议只使用测试数据，避免上传真实学生个人信息。若未来部署变化，我们会更新本协议并依法履行相应义务。</p>
+
+    <h2 id="s7">7. 数据共享与第三方</h2>
+    <p>我们不会出售你的数据，也不会把数据用于广告或用户画像。仅在以下必要范围内共享或委托处理：</p>
+    <ul>
+        <li><strong>腾讯云 tcamp44（中国香港）</strong>：提供云备份暂存、反馈页与公网入口。</li>
+        <li><strong>项目自有的 Ubuntu 主机（中国重庆）</strong>：归档云备份、运行账号与反馈服务。</li>
+        <li><strong>项目自建的 AI 服务（腾讯云成都）</strong>：接收并处理在线 AI 请求。</li>
+        <li><strong>DeepSeek 官方 API</strong>：仅在在线 AI 请求时接收你主动提交的内容并返回结果；其处理行为还受 DeepSeek 的隐私政策约束。</li>
+        <li><strong>华为 CoreVisionKit</strong>：端侧文字识别回退能力，不上传图片。</li>
+        <li><strong>PaddleOCR / onnxruntime / OpenCV / UVDoc</strong>：随应用内置的本地模型与库，端侧运行，不联网、不收集数据。</li>
+    </ul>
+    <p>除法律法规要求、司法机关或监管部门依法要求外，我们不会向第三方披露你的数据。若发生合并、分立或服务转移，我们会要求承继方继续受本协议约束。</p>
+
+    <h2 id="s8">8. 数据保存期限与删除</h2>
+    <ul>
+        <li><strong>本地数据</strong>：保存至你删除/重置或卸载应用。</li>
+        <li><strong>云备份</strong>：保存至你在应用内删除、申请删除账号数据，或测试服务停止并清理；tcamp44（中国香港）暂存副本在成功同步后删除，通常不超过 7 天；被拒绝的异常文件可能进入隔离目录，用于排查问题，不对外提供。</li>
+        <li><strong>在线 AI 内容</strong>：按请求临时处理，不长期保存班级内容档案；运行日志按运维策略保留。</li>
+        <li><strong>反馈</strong>：保存在 Ubuntu 主机（中国重庆）的反馈数据库，保存至反馈处理完成并由管理员删除，或你申请删除。</li>
+        <li><strong>匿名账号与用量</strong>：保存至你申请删除或测试服务停止并清理。</li>
+    </ul>
+
+    <h2 id="s9">9. 你的权利</h2>
+    <p>你可以：</p>
+    <ul>
+        <li>在应用内查看、修改、删除学生、记录、小组、规则和 AI 界面；</li>
+        <li>在“设置 → 数据 → 重置一切数据”清空全部本地数据；</li>
+        <li>在“设置 → 账号与云备份”删除云端备份；</li>
+        <li>在系统设置中关闭相机权限，撤回授权；</li>
+        <li>通过第 16 节邮箱申请删除匿名账号、云备份、运行日志或反馈，或咨询数据保存情况。</li>
+    </ul>
+    <p>由于本应用不设账号密码，删除账号数据时我们可能需要你通过原设备/原 AppUID 发起请求，或提供能够证明你对该设备/数据有控制权的信息；无法核实的请求我们可能无法处理。我们会在合理期限内答复（通常不超过 15 个工作日）。</p>
+
+    <h2 id="s10">10. 未成年人信息</h2>
+    <p>本应用是教师使用的教学辅助工具，不面向未成年人独立使用。教师录入未成年人信息时，应取得学校、监护人或其他合法授权，只录入完成操行分管理所必需的信息，并在使用结束后按学校要求删除或归档。若监护人认为相关信息被不当录入，可通过第 16 节邮箱联系我们，我们会配合处理。</p>
+
+    <h2 id="s11">11. 使用规范</h2>
+    <p>你同意不利用本应用从事以下行为：</p>
+    <ul>
+        <li>违反法律法规、侵犯他人合法权益或公序良俗；</li>
+        <li>未经授权收集、上传、公开未成年人或他人的个人信息；</li>
+        <li>攻击、干扰、绕过测试服务的鉴权、限流或安全措施；</li>
+        <li>上传恶意文件、病毒、超大文件或用于拒绝服务的资料；</li>
+        <li>利用在线 AI 生成违法、侵权、虚假或有害内容；</li>
+        <li>对应用进行反向工程、破解或试图提取内嵌密钥，法律允许的除外。</li>
+    </ul>
+    <p>本应用是教学辅助工具，OCR 与 AI 结果可能出错，请务必人工核对；不要仅凭本应用的记录作出处分、评价或其他对学生有重大影响的决定。</p>
+
+    <h2 id="s12">12. 知识产权</h2>
+    <p>本应用的界面、代码、文档、内置模型与库受著作权、商标权或其他权利保护。项目代码如仓库中声明采用 MIT License，则按该许可证使用；第三方组件（PaddleOCR、onnxruntime、OpenCV、UVDoc、CoreVisionKit 等）按其各自许可证使用。你录入的班级数据归你或你所在学校所有；你仅授予我们为提供你主动使用的测试服务所必需的有限处理许可。</p>
+
+    <h2 id="s13">13. 免责声明</h2>
+    <p>13.1 本应用按“现状”提供。测试版可能存在缺陷、功能变更、数据丢失或服务中断，我们不保证不间断、无错误或完全满足你的需求。</p>
+    <p>13.2 OCR、AI 整理、统计和报表结果仅供参考，可能存在识别或生成错误；你应自行核对并承担基于该结果作出的决定的责任。</p>
+    <p>13.3 你应自行负责班级数据的合法性、真实性、完整性和备份。因你未取得授权、误录、误删、未备份、设备丢失或违反本协议造成的损失，由你自行承担。</p>
+    <p>13.4 在法律允许的范围内，我们不对间接损失、利润损失、数据损失或第三方索赔承担责任；本条不限制依法不能限制的责任。</p>
+
+    <h2 id="s14">14. 协议变更</h2>
+    <p>我们可能随新版本更新本协议。更新后的协议会在应用内或本页面发布，并标注更新日期；重大变更会以适当方式提示。你继续使用即表示接受更新后的协议；如不同意，请停止使用并卸载应用。</p>
+
+    <h2 id="s15">15. 法律与争议</h2>
+    <p>本协议适用中华人民共和国法律（不含冲突法）。因本协议或本应用产生的争议，双方应先友好协商；协商不成的，任何一方可向有管辖权的人民法院提起诉讼。若你是消费者，你依法享有的消费者权益不因本协议而受到限制。</p>
+
+    <h2 id="s16">16. 联系方式</h2>
+    <div class="contact-section">
+        <p><strong>开发者：</strong>卢奕横</p>
+        <p><strong>合规与上架主体（监护人）：</strong>卢长伟</p>
+        <p><strong>邮箱：</strong><a href="mailto:lamicn@163.com">lamicn@163.com</a></p>
+        <p><strong>反馈入口：</strong><a href="https://www.tcamp44.cn/pclass/feedback/" target="_blank" rel="noopener">https://www.tcamp44.cn/pclass/feedback/</a></p>
+        <p>如你对本协议、数据保存或删除有疑问，请通过上述方式联系我们。我们会在合理期限内答复。</p>
+    </div>
+
+    <h2 id="s17">17. 备案与发布状态</h2>
+    <p>当前 Pclass 0.1.1 在线版用于封闭测试和 HAP 侧载，<strong>尚未完成 APP备案</strong>；tcamp44 为中国香港节点，Ubuntu 为中国重庆主机，在线 AI 服务位于腾讯云成都。在完成 APP备案、必要的 ICP 备案（如适用）及跨境合规前，本在线版不通过华为应用市场等渠道公开分发。</p>
+    <p>如果你使用的是关闭在线功能、移除 INTERNET 权限的“单机内测包”，应使用单独的纯本地用户协议；本文件中关于在线 AI、云备份、反馈和跨境传输的条款不适用于该单机包。</p>
+
+    <footer>
+        励学班（Pclass）0.1.1 测试版 · 用户协议、隐私政策与用户数据保存协议<br>
+        更新日期：2026-10-17 · 生效日期：2026-10-17
+    </footer>
+
+</body>
+</html>
